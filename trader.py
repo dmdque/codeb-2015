@@ -72,13 +72,12 @@ def main():
         bidsPrice = map(lambda e: e.price, bids)
         ask_price = asks[asksPrice.index(max(asksPrice))].price + 0.03
         bid_price = bids[bidsPrice.index(min(bidsPrice))].price
-        theprice = (bid_price + ask_price)/2.0 - ask_price - 0.05
-        if security_metas[ii].cash_diff < theprice:
+        theprice = (bid_price + ask_price)/2.0 - ask_price - 0.08
+        if security_metas[ii].cash_diff > theprice:
             asum = asum + 1
-    if asum > 2:
+    if asum >= 2:
         high_dividend = True
         print "high dividend"
-
 
     print high_dividend    
 
