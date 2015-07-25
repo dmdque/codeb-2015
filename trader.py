@@ -14,15 +14,23 @@ def main():
 
     #securities = get_securities()
     #get_highest_dr_sec(securities).s_print()
-    print "bids and asks"
-    bids, asks = get_ticker_orders("AAPL")
-    print get_ticker_orders("AAPL")
-    print "bid"
-    for e in bids:
-        e.s_print()
-    print "ask"
-    for e in asks:
-        e.s_print()
+    #print "bids and asks"
+    #bids, asks = get_ticker_orders("AAPL")
+    #print get_ticker_orders("AAPL")
+    #print "bid"
+    #for e in bids:
+    #    e.s_print()
+    #print "ask"
+    #for e in asks:
+    #    e.s_print()
+
+    # STEP 1
+
+    # STEP 2
+
+    # STEP 3
+
+    # STEP 4
 
     #print place_best_bid("ATVI")
     #print quick_run("MY_ORDERS")
@@ -75,5 +83,5 @@ def measure_dividend_payout():
     print dividend_payouts
     return dividend_payouts
 
-#main()
-measure_dividend_payout()
+main()
+#measure_dividend_payout()
