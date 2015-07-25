@@ -14,10 +14,12 @@ def main():
     #securities = get_securities()
     #get_highest_dr_sec(securities).s_print()
     print "bids and asks"
-    bids, asks = get_ticker_orders("ATVI")
-    print get_ticker_orders("ATVI")
+    bids, asks = get_ticker_orders("AAPL")
+    print get_ticker_orders("AAPL")
+    print "bid"
     for e in bids:
         e.s_print()
+    print "ask"
     for e in asks:
         e.s_print()
 
@@ -29,7 +31,7 @@ def main():
     #for s in securities:
         #s.s_print()
 
-    ##print place_best_bid("AAPL")
+    print place_best_bid("AAPL")
     #print place_best_ask("AAPL")
 
 main()

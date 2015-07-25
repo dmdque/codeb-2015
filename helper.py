@@ -61,10 +61,13 @@ def get_securities():
     return securities
 
 def place_best_ask(ticker):
+    print "place_best_ask"
     PRICE_DELTA = 0.01
     bids, asks = get_ticker_orders(ticker)
-    prices = filter(lambda e: e.price, bids)
+    prices = map(lambda e: e.price, bids)
+    print "prices", prices
     best_order = bids[prices.index(max(prices))]
+    best_order.s_print()
 
     best_price = best_order.price - PRICE_DELTA
     # TODO: compute best price
@@ -80,7 +83,7 @@ def place_best_ask(ticker):
 def place_best_bid(ticker):
     PRICE_DELTA = 0.01
     bids, asks = get_ticker_orders(ticker)
-    prices = filter(lambda e: e.price, asks)
+    prices = map(lambda e: e.price, asks)
     best_order = asks[prices.index(min(prices))]
 
     best_price = best_order.price + PRICE_DELTA
@@ -102,11 +105,11 @@ def place_bid(ticker, price, shares):
     commands = " ".join(["BID", str(ticker), str(price), str(possible_shares)])
     return quick_run(commands) # TODO: [0] or something
 
-# TODO
 # currently tries to sell all shares
 def place_ask(ticker, price, shares):
-    print ticker, price, shares
-    None
+    print "ticker, price, shares", ticker, price, shares
+    commands = " ".join(["ASK", str(ticker), str(price), str(shares)])
+    return quick_run(commands)
 
 def get_my_securities():
     securities = []
