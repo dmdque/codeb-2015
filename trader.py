@@ -8,12 +8,31 @@ PASS = "cs123"
 cash = 0
 security_metas = []
 
+def test_two_max():
+    # security_metas = [SecurityMeta(1, 1, 1, 1, 6), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 8)]
+    security_metas = [SecurityMeta(1, 1, 1, 1, 11), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 8)]
+    print map(lambda e: e.cash_diff, security_metas)
+    maxes = two_max(security_metas)
+    print map(lambda e: e.cash_diff, maxes)
+
+
+def two_max(sec_metas):
+    cash_diffs = map(lambda s: s.cash_diff, sec_metas)
+    max1 = max(cash_diffs)
+    cash_diffs2 = cash_diffs[:]
+    cash_diffs2.remove(max1)
+    max2 = max(cash_diffs2)
+    
+    return sec_metas[cash_diffs.index(max1)], sec_metas[cash_diffs.index(max2)]
+    
 def main():
     #cash = get_cash()
     #print cash
 
     security_metas = get_securities()
     measure_dividend_payout(security_metas)
+    for s in security_metas:
+        s.s_print()
     print map(lambda s: (s.ticker, s.cash_diff), security_metas) # for demo purposes
     #get_highest_dr_sec(security_metas).s_print()
     #print "bids and asks"
@@ -50,45 +69,35 @@ def main():
 
     # STEP 3
     if high_dividend:
-        cash_diffs = map(lambda e: e.cash_diff, security_metas)
-        index_highest = 0
-        index_secondhighest = 0
-        i = 0
-        while i < len(cash_diffs):
-            print cash_diffs[i], " ", security_metas[index_highest].cash_diff, " ", security_metas[index_secondhighest].cash_diff
-            if cash_diffs[i] > security_metas[index_highest].cash_diff:
-                index_highest = i
-            elif cash_diffs[i] > security_metas[index_secondhighest].cash_diff:
-                index_secondhighest = i
-            i += 1
-        print "highest: ", index_highest, " "
-        security_metas[index_highest].s_print()
-        print "second highest", index_secondhighest, " "
-        security_metas[index_secondhighest].s_print()
+        first,second=two_max(security_metas)
+        print "highest: "
+        first.s_print()
+        print "second highest"
+        second.s_print()
         while True:
             print "buying highest"
-            place_best_bid(security_metas[index_highest].ticker)
+            place_best_bid(first.ticker)
             cash1 = get_cash()
             time.sleep(5)
             cash2 = get_cash()
-            while (cash2 - cash1) > cash_diffs[index_secondhighest]:
+            while (cash2 - cash1) > second.cash_diff:
                 cash1 = get_cash()
                 time.sleep(5)
                 cash2 = get_cash()
             print "selling highest"
-            place_best_ask(security_metas[index_highest].ticker)
+            place_best_ask(first.ticker)
             print "buying second highest"
-            place_best_bid(security_metas[index_secondhighest].ticker)
+            place_best_bid(first.ticker)
             cash1 = get_cash()
             time.sleep(5)
             cash2 = get_cash()
-            while (cash2 - cash1) > cash_diffs[index_secondhighest]:
-                print "cash2 - cash1", (cash2 - cash1), "second highest: ", cash_diffs[index_secondhighest]
+            while (cash2 - cash1) > second.cash_diff:
+                print "cash2 - cash1", (cash2 - cash1), "second highest: ", second.cash_diff
                 cash1 = get_cash()
                 time.sleep(5)
                 cash2 = get_cash()
             print "selling second highest"
-            place_best_ask(security_metas[index_secondhighest].ticker)
+            place_best_ask(second.ticker)
 
     # STEP 4
 

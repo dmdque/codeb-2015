@@ -44,6 +44,8 @@ class SecurityMeta:
         self.net_worth = float(net_worth)
         self.dr = float(dr)
         self.vol = float(vol)
+        if cash_diff != None:
+            self.cash_diff = float(cash_diff)
 
     def s_print(self):
         print "{", self.ticker, self.net_worth, self.dr, self.vol, "}"
