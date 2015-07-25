@@ -33,4 +33,19 @@ def main():
             #res.append(entry)
 
     print "done"
-main()
+
+def track_my_securities():
+    tickers = get_tickers_list()
+    print tickers
+    # buy one of each stock
+    for ticker in tickers:
+        price = find_lowest_ask(ticker).price
+        place_bid(ticker, price, 1)
+        print "bought", ticker, price, 1
+    for i in range(5 * 60):
+        print ",".join(quick_run("MY_SECURITIES")[0].split())
+        sys.stdout.flush()
+        time.sleep(1)
+
+#main()
+track_my_securities()

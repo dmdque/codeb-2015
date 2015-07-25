@@ -60,14 +60,23 @@ def get_securities():
         i += 4
     return securities
 
+# given a stock, return the best ask order
+def find_lowest_ask(ticker):
+    bids, asks = get_ticker_orders(ticker)
+    best_order = find_lowest_order_price(asks)
+    return best_order
+
+# returns order with lowest price
 def find_lowest_order_price(olist):
     prices = map(lambda e: e.price, olist)
     return olist[prices.index(min(prices))]
-    
+
+# returns order with highest price
 def find_highest_order_price(olist):
     prices = map(lambda e: e.price, olist)
     return olist[prices.index(max(prices))]
 
+# does this even work properly?
 def place_best_ask(ticker):
     print "place_best_ask"
     PRICE_DELTA = 0.01
@@ -86,6 +95,8 @@ def place_best_ask(ticker):
     return place_ask(ticker, best_price, my_shares)
 
 # places best bid for certain ticker
+# tries to buy all of the shares of the lowest ask,
+# or most possible (depending on cash)
 def place_best_bid(ticker):
     PRICE_DELTA = 0.01
     bids, asks = get_ticker_orders(ticker)
@@ -93,21 +104,19 @@ def place_best_bid(ticker):
 
     best_price = best_order.price + PRICE_DELTA
     max_shares = best_order.shares
-    print "best_price", best_price
-    print "max_shares", max_shares
-    # TODO: get num shares I have
 
-    return place_bid(ticker, best_price, max_shares)
-
-# TODO: add iff statement to prevent order if possible_shares == 0
-def place_bid(ticker, price, shares):
     cash = get_cash()
     possible_shares = int(float(cash) / price)
-    print "cash", cash
-    print "price", price
-    print "possible_shares", possible_shares
+    shares = min(max_shares, possible_shares)
+    print "best_price", best_price
+    print "shares", shares
+    # TODO: get num shares I have
 
-    commands = " ".join(["BID", str(ticker), str(price), str(possible_shares)])
+    return place_bid(ticker, best_price, shares)
+
+# simple wrapper for BID
+def place_bid(ticker, price, shares):
+    commands = " ".join(["BID", str(ticker), str(price), str(shares)])
     return quick_run(commands) # TODO: [0] or something
 
 # currently tries to sell all shares
