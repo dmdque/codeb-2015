@@ -1,6 +1,7 @@
 from clientpy2 import *
 from helper import *
 import time
+import signal
 
 TEAM_NAME = "Team_333"
 PASS = "cs123"
@@ -26,6 +27,7 @@ def two_max(sec_metas):
     return sec_metas[cash_diffs.index(max1)], sec_metas[cash_diffs.index(max2)]
     
 def main():
+    connect()
     #cash = get_cash()
     #print cash
 
@@ -111,6 +113,7 @@ def main():
 
     #print place_best_bid("AAPL")
     #print place_best_ask("AAPL")
+    disconnect()
 
 # buys for speed, at the cost of cash
 def buy_one(ticker):
@@ -149,4 +152,26 @@ def measure_dividend_payout(security_metas):
         security_metas[i].cash_diff = float(cash2 - cash1)
         print "dividend payout estimation", ticker, security_metas[i].cash_diff
 
-main()
+# causes disconnect on SIGINT
+def exit_gracefully(signum, frame):
+    # restore the original signal handler as otherwise evil things will happen
+    # in raw_input when CTRL+C is pressed, and our signal handler is not re-entrant
+    signal.signal(signal.SIGINT, original_sigint)
+
+    try:
+        if raw_input("\nReally quit? (y/n)> ").lower().startswith('y'):
+            disconnect()
+            sys.exit(1)
+
+    except KeyboardInterrupt:
+        print("Ok ok, quitting")
+        sys.exit(1)
+
+    # restore the exit gracefully handler here    
+    signal.signal(signal.SIGINT, exit_gracefully)
+
+if __name__ == '__main__':
+    # store the original SIGINT handler
+    original_sigint = signal.getsignal(signal.SIGINT)
+    signal.signal(signal.SIGINT, exit_gracefully)
+    main()

@@ -1,12 +1,16 @@
 import socket
 import sys
 
-# modification which returns instead of printing to stdout
-def ret_run(user="Team_333", password="cs123", *commands):
-    return_lines = []
+def connect():
+    global sock
+    global sfile
+    TEAM_NAME = "Team_333"
+    TEAM_PW = "cs123"
+    user, password = TEAM_NAME, TEAM_PW
+
     HOST, PORT = "codebb.cloudapp.net", 17429
-    
-    data=user + " " + password + "\n" + "\n".join(commands) + "\nCLOSE_CONNECTION\n"
+
+    data=user + " " + password + "\n"
 
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,18 +18,39 @@ def ret_run(user="Team_333", password="cs123", *commands):
         sock.connect((HOST, PORT))
         sock.sendall(data)
         sfile = sock.makefile()
-        rline = sfile.readline()
-        while rline:
-            return_lines.append(rline.strip())
-            rline = sfile.readline()
     finally:
-        sock.close()
+        print "connected"
 
-    return return_lines
-    
+def disconnect():
+    global sock
+    global sfile
+    data = "\nCLOSE_CONNECTION\n"
+    try:
+        sock.sendall(data)
+        sock.close()
+    finally:
+        print "disconnected"
+
+# modification which returns instead of printing to stdout
+def ret_run(*commands):
+    global sock
+    global sfile
+    return_line = None
+
+    data="\n".join(commands) + "\n"
+
+    try:
+        sock.sendall(data)
+        sfile = sock.makefile()
+        return_line = sfile.readline().strip()
+    finally:
+        None
+
+    return return_line
+
 def run(user, password, *commands):
     HOST, PORT = "codebb.cloudapp.net", 17429
-    
+
     data=user + " " + password + "\n" + "\n".join(commands) + "\nCLOSE_CONNECTION\n"
 
     try:
