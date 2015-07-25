@@ -55,7 +55,6 @@ def get_cash():
 def get_securities():
     securities = []
     inputstr = ret_run("SECURITIES").split()
-    print "inputstr", inputstr
     i = 1
     while i < len(inputstr):
         s = SecurityMeta(inputstr[i], inputstr[i+1], inputstr[i+2], inputstr[i+3])
@@ -99,8 +98,7 @@ def place_best_ask(ticker):
     my_securities = get_my_securities()
     sec = my_securities[map(lambda s: s.ticker, my_securities).index(ticker)]
     my_shares = sec.shares
-    print "best_price", best_price
-    print "my_shares", my_shares
+    print "selling", my_shares, ticker, "at", best_price
 
     return place_ask(ticker, best_price, my_shares)
 
@@ -118,8 +116,7 @@ def place_best_bid(ticker):
     cash = get_cash()
     possible_shares = int(float(cash) / best_price)
     shares = min(max_shares, possible_shares)
-    print "best_price", best_price
-    print "shares", shares
+    print "buying", shares, ticker, "at", best_price
     # TODO: get num shares I have
 
     return place_bid(ticker, best_price, shares)

@@ -101,7 +101,7 @@ def train():
         else:
             # sell all act_ticker
             for ticker in tickers:
-                if random.random() > 0.7:
+                if random.random() > 0.95:
                     place_best_ask(ticker)
 
         if last_ticker_z_values and last_ticker_a_values:
@@ -135,7 +135,7 @@ def train():
         last_ticker_i = ticker_i
         i += 1
         print "i:", i
-        if i > 100:
+        if i > 1000:
             is_stop_critereon = True
             print ticker_networks
 
