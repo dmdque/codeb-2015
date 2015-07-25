@@ -12,7 +12,9 @@ def main():
     #cash = get_cash()
     #print cash
 
-    #securities = get_securities()
+    security_metas = get_securities()
+    measure_dividend_payout(security_metas)
+    print map(lambda s: (s.ticker, s.cash_diff), security_metas) # for demo purposes
     #get_highest_dr_sec(securities).s_print()
     #print "bids and asks"
     #bids, asks = get_ticker_orders("AAPL")
@@ -27,6 +29,21 @@ def main():
     # STEP 1
 
     # STEP 2
+    n = len(secMeta)
+    asum = 0
+    high_dividend = False
+    for ii in range(0,n-1):
+        bids, asks = get_ticker_orders(secMeta[ii].ticker)
+        asksPrice = map(lambda e: e.price, asks)
+        bidsPrice = map(lambda e: e.price, bids)
+        ask_price = asks[asksPrice.index(max(asksPrice))].price + 0.03
+        bid_price = bids[bidsPrice.index(min(bidsPrice))].price
+        theprice = (bid_price + ask_price)/2.0 - ask_price - 0.05
+        if secMeta[ii].cash_diff < theprice:
+            asum = asum + 1
+    if asum > (float(n)/2.0):
+        print "high dividend"
+        high_dividend = True
 
     # STEP 3
     if high_dividend:
@@ -77,40 +94,36 @@ def buy_one(ticker):
     PRICE_DELTA = 0.01
     # get price of order with highest number of shares
     # to guarantee quickness
-    bids, asks = get_ticker_orders("AAPL")
+    bids, asks = get_ticker_orders(ticker)
     num_shares = map(lambda e: e.shares, asks)
     order = asks[num_shares.index(max(num_shares))]
     price = order.price + PRICE_DELTA
     place_bid(ticker, price, 1)
 
+# sells at price given by order with most shares
 def sell_one(ticker):
     PRICE_DELTA = 0.01
     # get price of order with highest number of shares
     # to guarantee quickness
-    bids, asks = get_ticker_orders("AAPL")
+    bids, asks = get_ticker_orders(ticker)
     num_shares = map(lambda e: e.shares, bids)
     order = bids[num_shares.index(max(num_shares))]
-    print map(lambda b: b.price, bids)
-    print "sell max shares", max(num_shares), order.shares, order.price
     price = order.price - PRICE_DELTA
     place_ask(ticker, price, 1)
 
-def measure_dividend_payout():
+# adds cash diff info to security meta
+def measure_dividend_payout(security_metas):
     # store securityMeta
     tickers = get_tickers_list()
-    dividend_payouts = {}
 
-    for ticker in tickers:
+    for i, ticker in enumerate(tickers):
         buy_one(ticker)
         cash1 = get_cash()
         time.sleep(5)
         cash2 = get_cash()
         sell_one(ticker)
 
-        dividend_payouts[ticker] = float(cash2 - cash1)
-        print "dividend payout estimation", ticker, dividend_payouts[ticker]
-    print dividend_payouts
-    return dividend_payouts
+        security_metas[i].cash_diff = float(cash2 - cash1)
+        print "dividend payout estimation", ticker, security_metas[i].cash_diff
 
 main()
-#measure_dividend_payout()

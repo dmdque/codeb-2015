@@ -51,6 +51,7 @@ class SecurityMeta:
 def get_cash():
     return float(ret_run(TEAM_NAME, TEAM_PW, "MY_CASH")[0].split()[1])
 
+# returns list of SecurityMeta
 def get_securities():
     securities = []
     inputstr = ret_run(TEAM_NAME, TEAM_PW, "SECURITIES")[0].split()
