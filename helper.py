@@ -3,12 +3,40 @@ from clientpy2 import *
 TEAM_NAME = "Team_333"
 TEAM_PW = "cs123"
 
+def quick_run(commands):
+    TEAM_NAME = "Team_333"
+    TEAM_PW = "cs123"
+    return ret_run(TEAM_NAME, TEAM_PW, commands)
+
+class Order:
+    price = None
+    shares = None
+
+    def __init__(self, price=None, shares=None):
+        self.price = float(price)
+        self.shares = int(shares)
+
+    def s_print(self):
+        print "{", self.price, self.shares, "}"
+
 class Security:
+    ticker = None
+    shares = None
+    dr = None
+
+    def __init__(self, ticker=None, shares=None, dr=None):
+        self.ticker = ticker
+        self.shares = int(shares)
+        self.dr = float(dr)
+
+    def s_print(self):
+        print "{", self.ticker, self.shares, self.dr, "}"
+
+class SecurityMeta:
     ticker = None
     net_worth = None
     dr = None
     vol = None
-    
 
     def __init__(self, ticker=None, net_worth=None, dr=None, vol=None):
         self.ticker = ticker
@@ -27,10 +55,84 @@ def get_securities():
     inputstr = ret_run(TEAM_NAME, TEAM_PW, "SECURITIES")[0].split()
     i = 1
     while i < len(inputstr):
-        s = Security(inputstr[i], inputstr[i+1], inputstr[i+2], inputstr[i+3])
+        s = SecurityMeta(inputstr[i], inputstr[i+1], inputstr[i+2], inputstr[i+3])
         securities.append(s)
         i += 4
-    return securities        
+    return securities
+
+def place_best_ask(ticker):
+    PRICE_DELTA = 0.01
+    bids, asks = get_ticker_orders(ticker)
+    prices = filter(lambda e: e.price, bids)
+    best_order = bids[prices.index(max(prices))]
+
+    best_price = best_order.price - PRICE_DELTA
+    # TODO: compute best price
+    my_securities = get_my_securities()
+    sec = my_securities[map(lambda s: s.ticker, my_securities).index(ticker)]
+    my_shares = sec.shares
+    print "best_price", best_price
+    print "my_shares", my_shares
+
+    return place_ask(ticker, best_price, my_shares)
+
+# places best bid for certain ticker
+def place_best_bid(ticker):
+    PRICE_DELTA = 0.01
+    bids, asks = get_ticker_orders(ticker)
+    prices = filter(lambda e: e.price, asks)
+    best_order = asks[prices.index(min(prices))]
+
+    best_price = best_order.price + PRICE_DELTA
+    max_shares = best_order.shares
+    print "best_price", best_price
+    print "max_shares", max_shares
+    # TODO: get num shares I have
+
+    return place_bid(ticker, best_price, max_shares)
+
+# TODO: add iff statement to prevent order if possible_shares == 0
+def place_bid(ticker, price, shares):
+    cash = get_cash()
+    possible_shares = int(float(cash) / price)
+    print "cash", cash
+    print "price", price
+    print "possible_shares", possible_shares
+
+    commands = " ".join(["BID", str(ticker), str(price), str(possible_shares)])
+    return quick_run(commands) # TODO: [0] or something
+
+# TODO
+# currently tries to sell all shares
+def place_ask(ticker, price, shares):
+    print ticker, price, shares
+    None
+
+def get_my_securities():
+    securities = []
+    inputstr = ret_run(TEAM_NAME, TEAM_PW, "MY_SECURITIES")[0].split()
+    i = 1
+    while i < len(inputstr):
+        s = Security(inputstr[i], inputstr[i+1], inputstr[i+2])
+        securities.append(s)
+        i += 3
+    return securities
+
+def get_ticker_orders(ticker):
+    orders = quick_run("ORDERS " + ticker)[0].split()
+    bids = []
+    asks = []
+
+    i = 1
+    while i < len(orders):
+        if orders[i] == "BID":
+            o = Order(orders[i + 2], orders[i + 3])
+            bids.append(o)
+        elif orders[i] == "ASK":
+            o = Order(orders[i + 2], orders[i + 3])
+            asks.append(o)
+        i+= 4
+    return bids, asks
 
 def get_highest_dr_sec(securities):
     drs = map(lambda e: e.dr, securities)

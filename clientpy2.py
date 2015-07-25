@@ -2,7 +2,7 @@ import socket
 import sys
 
 # modification which returns instead of printing to stdout
-def ret_run(user, password, *commands):
+def ret_run(user="Team_333", password="cs123", *commands):
     return_lines = []
     HOST, PORT = "codebb.cloudapp.net", 17429
     
