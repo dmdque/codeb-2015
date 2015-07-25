@@ -2,6 +2,7 @@ from clientpy2 import *
 from helper import *
 import time
 import signal
+import numpy as np
 
 TEAM_NAME = "Team_333"
 PASS = "cs123"
@@ -107,12 +108,26 @@ def main():
     if high_dividend == False:
         print "im here"
         while True:
-    	    spread_aggresiveness = 4
+    	    spread_aggresiveness = None
             n = len(security_metas)
-	    for ii in range(0,n-1):
+#            bids = None
+#            asks = None
+            asksPrice = None
+            bidsPrice = None
+            ask_price = None
+            bid_price = None
+            for ii in range(0,n-1):
                 bids,asks = get_ticker_orders(security_metas[ii].ticker)
                 asksPrice = map(lambda e: e.price, asks)
                 bidsPrice = map(lambda e: e.price, bids)
+                ask_price = np.average(asksPrice)
+                bid_price = np.average(bidsPrice)
+                spread_aggresiveness = (ask_price-bid_price)*0.9
+
+	    for ii in range(0,n-1):
+                bids,asks = get_ticker_orders(security_metas[ii].ticker)
+#                asksPrice = map(lambda e: e.price, asks)
+#                bidsPrice = map(lambda e: e.price, bids)
                 ask_price = asks[asksPrice.index(max(asksPrice))].price
                 bid_price = bids[bidsPrice.index(min(bidsPrice))].price
                 spread = ask_price-bid_price
