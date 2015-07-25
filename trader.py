@@ -72,99 +72,77 @@ def main():
         bidsPrice = map(lambda e: e.price, bids)
         ask_price = asks[asksPrice.index(max(asksPrice))].price + 0.03
         bid_price = bids[bidsPrice.index(min(bidsPrice))].price
-        theprice = (bid_price + ask_price)/2.0 - ask_price - 0.08
+        theprice = (bid_price + ask_price)/2.0 - ask_price - 0.05
         if security_metas[ii].cash_diff > theprice:
             asum = asum + 1
-    if asum >= 2:
+    if asum > 3:
         high_dividend = True
         print "high dividend"
+        print str(asum)
 
-    print high_dividend    
-
+    print high_dividend
+    high_dividend = False
     # STEP 3
-    if high_dividend:
-        first, second, third, fourth = n_max(security_metas, 4)
-        print "highest: "
-        first.s_print()
-        print "second highest"
-        second.s_print()
-        while True:
-            print "buying highest"
-            place_best_bid(first.ticker)
-            cash1 = get_cash()
-            time.sleep(3)
-            cash2 = get_cash()
-            while (cash2 - cash1) > second.cash_diff:
-                cash1 = get_cash()
-                time.sleep(3)
-                cash2 = get_cash()
-            print "selling highest"
-            place_best_ask(first.ticker)
-            print "buying second highest"
-            place_best_bid(second.ticker)
-            cash1 = get_cash()
-            time.sleep(3)
-            cash2 = get_cash()
-            while (cash2 - cash1) > third.cash_diff:
-                print "cash2 - cash1", (cash2 - cash1), "second highest: ", second.cash_diff
-                cash1 = get_cash()
-                time.sleep(3)
-                cash2 = get_cash()
-            print "selling second highest"
-            place_best_ask(second.ticker)
+#    if high_dividend:
+#        first, second, third, fourth = n_max(security_metas, 4)
+#        print "highest: "
+#        first.s_print()
+#        print "second highest"
+#        second.s_print()
+#        while True:
+#            print "buying highest"
+#            place_best_bid(first.ticker)
+#            cash1 = get_cash()
+#            time.sleep(5)
+#            cash2 = get_cash()
+#            while (cash2 - cash1) > second.cash_diff:
+#                cash1 = get_cash()
+#                time.sleep(50)
+#                cash2 = get_cash()
+#            print "selling highest"
+#            place_best_ask(first.ticker)
+#            print "buying second highest"
+#            place_best_bid(second.ticker)
+#            cash1 = get_cash()
+#            time.sleep(5)
+#            cash2 = get_cash()
+#            while (cash2 - cash1) > third.cash_diff:
+#                print "cash2 - cash1", (cash2 - cash1), "second highest: ", second.cash_diff
+#                cash1 = get_cash()
+#                time.sleep(50)
+#                cash2 = get_cash()
+#            print "selling second highest"
+#            place_best_ask(second.ticker)
 
-            print "buying third highest"
-            place_best_bid(third.ticker)
-            cash1 = get_cash()
-            time.sleep(3)
-            cash2 = get_cash()
-            while (cash2 - cash1) > fourth.cash_diff:
-                cash1 = get_cash()
-                time.sleep(3)
-                cash2 = get_cash()
-            print "selling highest"
-            place_best_ask(third.ticker)
-            print "buying fourth highest"
-            place_best_bid(fourth.ticker)
-            cash1 = get_cash()
-            time.sleep(3)
-            cash2 = get_cash()
-            while (cash2 - cash1) > first.cash_diff:
-                print "cash2 - cash1", (cash2 - cash1), "fourth highest: ", fourth.cash_diff
-                cash1 = get_cash()
-                time.sleep(3)
-                cash2 = get_cash()
-            print "selling fourth highest"
-            place_best_ask(fourth.ticker)
+#            print "buying third highest"
+#            place_best_bid(third.ticker)
+#            cash1 = get_cash()
+#            time.sleep(5)
+#            cash2 = get_cash()
+#            while (cash2 - cash1) > fourth.cash_diff:
+#                cash1 = get_cash()
+#                time.sleep(50)
+#                cash2 = get_cash()
+#            print "selling highest"
+#            place_best_ask(third.ticker)
 
     # STEP 4
     if high_dividend == False:
         print "im here"
         while True:
-            spread_aggresiveness = None
+            spread_aggresiveness = 10.0
             n = len(security_metas)
-            #bids = None
-            #asks = None
             asksPrice = None
             bidsPrice = None
             ask_price = None
             bid_price = None
-            for ii in range(0,n-1):
-                bids,asks = get_ticker_orders(security_metas[ii].ticker)
-                asksPrice = map(lambda e: e.price, asks)
-                bidsPrice = map(lambda e: e.price, bids)
-                ask_price = np.average(asksPrice)
-                bid_price = np.average(bidsPrice)
-                spread_aggresiveness = (ask_price-bid_price)*0.9
 
             for ii in range(0,n-1):
                 bids,asks = get_ticker_orders(security_metas[ii].ticker)
                 asksPrice = map(lambda e: e.price, asks)
                 bidsPrice = map(lambda e: e.price, bids)
-                if not asksPrice:
-                    print "error?"
-                ask_price = asks[asksPrice.index(max(asksPrice))].price
-                bid_price = bids[bidsPrice.index(min(bidsPrice))].price
+                ask_price = asks[asksPrice.index(min(asksPrice))].price
+                bid_price = bids[bidsPrice.index(max(bidsPrice))].price
                 spread = ask_price-bid_price
                 ss = get_my_securities()
                 tempn = len(ss)
@@ -174,21 +152,23 @@ def main():
                         if ss[jj].ticker == security_metas[ii].ticker:
                             numshares = ss[jj].shares
                 print "spread = " + str(spread)
-                print "spread agg = "+ str(spread_aggresiveness)
-                if spread < spread_aggresiveness and numshares == 0:
+#                print "spread agg = "+ str(spread_aggresiveness)
+                if spread <= spread_aggresiveness and numshares == 0:
                     print "criteria satisfied"
-                    b = bid_price + 0.2*spread_aggresiveness
+#                    b = bid_price + 0.008*spread_aggresiveness
+                    b = (bid_price + ask_price)*0.5
                     maxnum = int(get_cash()/b)
                     if(b>0 and maxnum>0):
                         place_bid(security_metas[ii].ticker,b,maxnum)
                         print "PLACED: BID "
                 elif numshares > 0:
-                    a = ask_price - 0.2*spread_aggresiveness
+#                    a = ask_price - 0.006*spread_aggresiveness
+                    a = (ask_price + bid_price)*0.5
                     vol = numshares
                     if(a > 0 and vol > 0):
                         place_ask(security_metas[ii].ticker,a,vol)
                         print "PLACED: ASK "
-            time.sleep(5)
+            time.sleep(10)
 
     #print place_best_bid("ATVI")
     #print quick_run("MY_ORDERS")
