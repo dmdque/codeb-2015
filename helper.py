@@ -121,6 +121,8 @@ def get_my_securities():
         i += 3
     return securities
 
+# returns all orders for a given stock
+# returns in two arrays: bids and asks
 def get_ticker_orders(ticker):
     orders = quick_run("ORDERS " + ticker)[0].split()
     bids = []
@@ -145,3 +147,7 @@ def get_highest_dr_sec(securities):
 def get_best_dividend_ticker():
     None
 
+# returns list of all tickers
+def get_tickers_list():
+    securities = get_securities()
+    return map(lambda e: e.ticker, securities)
