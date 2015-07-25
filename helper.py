@@ -37,8 +37,9 @@ class SecurityMeta:
     net_worth = None
     dr = None
     vol = None
+    cash_diff = None
 
-    def __init__(self, ticker=None, net_worth=None, dr=None, vol=None):
+    def __init__(self, ticker=None, net_worth=None, dr=None, vol=None, cash_diff=None):
         self.ticker = ticker
         self.net_worth = float(net_worth)
         self.dr = float(dr)
@@ -61,6 +62,12 @@ def get_securities():
     return securities
 
 # given a stock, return the best ask order
+def find_highest_bid(ticker):
+    bids, asks = get_ticker_orders(ticker)
+    best_order = find_highest_order_price(bids)
+    return best_order
+
+# given a stock, return the best ask order
 def find_lowest_ask(ticker):
     bids, asks = get_ticker_orders(ticker)
     best_order = find_lowest_order_price(asks)
@@ -77,6 +84,7 @@ def find_highest_order_price(olist):
     return olist[prices.index(max(prices))]
 
 # does this even work properly?
+# rename to sell_best
 def place_best_ask(ticker):
     print "place_best_ask"
     PRICE_DELTA = 0.01
