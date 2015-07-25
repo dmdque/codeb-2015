@@ -115,7 +115,7 @@ def place_best_bid(ticker):
     max_shares = best_order.shares
 
     cash = get_cash()
-    possible_shares = int(float(cash) / price)
+    possible_shares = int(float(cash) / best_price)
     shares = min(max_shares, possible_shares)
     print "best_price", best_price
     print "shares", shares

@@ -6,7 +6,7 @@ TEAM_NAME = "Team_333"
 PASS = "cs123"
 
 cash = 0
-securities = []
+security_metas = []
 
 def main():
     #cash = get_cash()
@@ -15,7 +15,7 @@ def main():
     security_metas = get_securities()
     measure_dividend_payout(security_metas)
     print map(lambda s: (s.ticker, s.cash_diff), security_metas) # for demo purposes
-    #get_highest_dr_sec(securities).s_print()
+    #get_highest_dr_sec(security_metas).s_print()
     #print "bids and asks"
     #bids, asks = get_ticker_orders("AAPL")
     #print get_ticker_orders("AAPL")
@@ -29,52 +29,66 @@ def main():
     # STEP 1
 
     # STEP 2
-    n = len(secMeta)
+    n = len(security_metas)
     asum = 0
     high_dividend = False
     for ii in range(0,n-1):
-        bids, asks = get_ticker_orders(secMeta[ii].ticker)
+        bids, asks = get_ticker_orders(security_metas[ii].ticker)
         asksPrice = map(lambda e: e.price, asks)
         bidsPrice = map(lambda e: e.price, bids)
         ask_price = asks[asksPrice.index(max(asksPrice))].price + 0.03
         bid_price = bids[bidsPrice.index(min(bidsPrice))].price
         theprice = (bid_price + ask_price)/2.0 - ask_price - 0.05
-        if secMeta[ii].cash_diff < theprice:
+        if security_metas[ii].cash_diff < theprice:
             asum = asum + 1
     if asum > (float(n)/2.0):
         print "high dividend"
         high_dividend = True
 
+    print high_dividend    
+    high_dividend = True
+
     # STEP 3
     if high_dividend:
-        cash_diffs = map(lambda e: e.cash_diff, securities)
+        cash_diffs = map(lambda e: e.cash_diff, security_metas)
         index_highest = 0
         index_secondhighest = 0
-        int i = 0
+        i = 0
         while i < len(cash_diffs):
-            if cash_diffs[i] < securities[index_highest].cash_diff:
+            print cash_diffs[i], " ", security_metas[index_highest].cash_diff, " ", security_metas[index_secondhighest].cash_diff
+            if cash_diffs[i] > security_metas[index_highest].cash_diff:
                 index_highest = i
-            else if cash_diffs[i] < securities[index_secondhighest].cash_diff:
+            elif cash_diffs[i] > security_metas[index_secondhighest].cash_diff:
                 index_secondhighest = i
+            i += 1
+        print "highest: ", index_highest, " "
+        security_metas[index_highest].s_print()
+        print "second highest", index_secondhighest, " "
+        security_metas[index_secondhighest].s_print()
         while True:
-            place_best_bid(securities[index_highest].ticker)
+            print "buying highest"
+            place_best_bid(security_metas[index_highest].ticker)
             cash1 = get_cash()
-            sleep(5)
+            time.sleep(5)
             cash2 = get_cash()
             while (cash2 - cash1) > cash_diffs[index_secondhighest]:
                 cash1 = get_cash()
-                sleep(5)
+                time.sleep(5)
                 cash2 = get_cash()
-            place_best_ask(securities[index_highest].ticker)
-            place_best_bid(securities[index_secondhighest].ticker)
+            print "selling highest"
+            place_best_ask(security_metas[index_highest].ticker)
+            print "buying second highest"
+            place_best_bid(security_metas[index_secondhighest].ticker)
             cash1 = get_cash()
-            sleep(5)
+            time.sleep(5)
             cash2 = get_cash()
             while (cash2 - cash1) > cash_diffs[index_secondhighest]:
+                print "cash2 - cash1", (cash2 - cash1), "second highest: ", cash_diffs[index_secondhighest]
                 cash1 = get_cash()
-                sleep(5)
+                time.sleep(5)
                 cash2 = get_cash()
-            place_best_ask(securities[index_secondhighest].ticker)
+            print "selling second highest"
+            place_best_ask(security_metas[index_secondhighest].ticker)
 
     # STEP 4
 
@@ -82,8 +96,8 @@ def main():
     #print quick_run("MY_ORDERS")
     #print quick_run("MY_SECURITIES")
 
-    #securities = get_my_securities()
-    #for s in securities:
+    #security_metas = get_my_securities()
+    #for s in security_metas:
         #s.s_print()
 
     #print place_best_bid("AAPL")
