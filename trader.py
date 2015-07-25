@@ -29,6 +29,35 @@ def main():
     # STEP 2
 
     # STEP 3
+    if high_dividend:
+        cash_diffs = map(lambda e: e.cash_diff, securities)
+        index_highest = 0
+        index_secondhighest = 0
+        int i = 0
+        while i < len(cash_diffs):
+            if cash_diffs[i] < securities[index_highest].cash_diff:
+                index_highest = i
+            else if cash_diffs[i] < securities[index_secondhighest].cash_diff:
+                index_secondhighest = i
+        while True:
+            place_best_bid(securities[index_highest].ticker)
+            cash1 = get_cash()
+            sleep(5)
+            cash2 = get_cash()
+            while (cash2 - cash1) > cash_diffs[index_secondhighest]:
+                cash1 = get_cash()
+                sleep(5)
+                cash2 = get_cash()
+            place_best_ask(securities[index_highest].ticker)
+            place_best_bid(securities[index_secondhighest].ticker)
+            cash1 = get_cash()
+            sleep(5)
+            cash2 = get_cash()
+            while (cash2 - cash1) > cash_diffs[index_secondhighest]:
+                cash1 = get_cash()
+                sleep(5)
+                cash2 = get_cash()
+            place_best_ask(securities[index_secondhighest].ticker)
 
     # STEP 4
 
