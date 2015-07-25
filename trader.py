@@ -92,23 +92,23 @@ def main():
             print "buying highest"
             place_best_bid(first.ticker)
             cash1 = get_cash()
-            time.sleep(5)
+            time.sleep(3)
             cash2 = get_cash()
             while (cash2 - cash1) > second.cash_diff:
                 cash1 = get_cash()
-                time.sleep(5)
+                time.sleep(3)
                 cash2 = get_cash()
             print "selling highest"
             place_best_ask(first.ticker)
             print "buying second highest"
             place_best_bid(second.ticker)
             cash1 = get_cash()
-            time.sleep(5)
+            time.sleep(3)
             cash2 = get_cash()
             while (cash2 - cash1) > third.cash_diff:
                 print "cash2 - cash1", (cash2 - cash1), "second highest: ", second.cash_diff
                 cash1 = get_cash()
-                time.sleep(5)
+                time.sleep(3)
                 cash2 = get_cash()
             print "selling second highest"
             place_best_ask(second.ticker)
@@ -116,23 +116,23 @@ def main():
             print "buying third highest"
             place_best_bid(third.ticker)
             cash1 = get_cash()
-            time.sleep(5)
+            time.sleep(3)
             cash2 = get_cash()
             while (cash2 - cash1) > fourth.cash_diff:
                 cash1 = get_cash()
-                time.sleep(5)
+                time.sleep(3)
                 cash2 = get_cash()
             print "selling highest"
             place_best_ask(third.ticker)
             print "buying fourth highest"
             place_best_bid(fourth.ticker)
             cash1 = get_cash()
-            time.sleep(5)
+            time.sleep(3)
             cash2 = get_cash()
             while (cash2 - cash1) > first.cash_diff:
                 print "cash2 - cash1", (cash2 - cash1), "fourth highest: ", fourth.cash_diff
                 cash1 = get_cash()
-                time.sleep(5)
+                time.sleep(3)
                 cash2 = get_cash()
             print "selling fourth highest"
             place_best_ask(fourth.ticker)
@@ -232,7 +232,7 @@ def measure_dividend_payout(security_metas):
     for i, ticker in enumerate(tickers):
         buy_one(ticker)
         cash1 = get_cash()
-        time.sleep(5)
+        time.sleep(3)
         cash2 = get_cash()
         sell_one(ticker)
 
