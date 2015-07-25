@@ -60,13 +60,19 @@ def get_securities():
         i += 4
     return securities
 
+def find_lowest_order_price(olist):
+    prices = map(lambda e: e.price, olist)
+    return olist[prices.index(min(prices))]
+    
+def find_highest_order_price(olist):
+    prices = map(lambda e: e.price, olist)
+    return olist[prices.index(max(prices))]
+
 def place_best_ask(ticker):
     print "place_best_ask"
     PRICE_DELTA = 0.01
     bids, asks = get_ticker_orders(ticker)
-    prices = map(lambda e: e.price, bids)
-    print "prices", prices
-    best_order = bids[prices.index(max(prices))]
+    best_order = find_highest_order_price(bids)
     best_order.s_print()
 
     best_price = best_order.price - PRICE_DELTA
@@ -83,8 +89,7 @@ def place_best_ask(ticker):
 def place_best_bid(ticker):
     PRICE_DELTA = 0.01
     bids, asks = get_ticker_orders(ticker)
-    prices = map(lambda e: e.price, asks)
-    best_order = asks[prices.index(min(prices))]
+    best_order = find_lowest_order_price(asks)
 
     best_price = best_order.price + PRICE_DELTA
     max_shares = best_order.shares
