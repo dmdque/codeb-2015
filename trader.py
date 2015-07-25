@@ -27,7 +27,20 @@ def main():
     # STEP 1
 
     # STEP 2
-
+    n = len(secMeta)
+    asum = 0
+    high_dividend = False
+    for ii in range(0,n-1):
+        bids, asks = get_ticker_orders(secMeta[ii].ticker)
+        asksPrice = map(lambda e: e.price, asks)
+        bidsPrice = map(lambda e: e.price, bids)
+        ask1 = asks[asksPrice.index(max(asksPrice))] + 0.03
+        bid = bids[bidsPrice.index(min(bidsPrice))]
+        theprice = (bid + ask1)/2.0 - ask1 - 0.05
+        if secMeta[ii].cash_diff < theprice:
+            asum = asum + 1
+    if asum > (float(n)/2.0):
+        high_dividend = True
     # STEP 3
 
     # STEP 4
