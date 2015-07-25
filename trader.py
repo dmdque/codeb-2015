@@ -32,10 +32,11 @@ def main():
     #print cash
 
     security_metas = get_securities()
+    print security_metas
     measure_dividend_payout(security_metas)
     for s in security_metas:
         s.s_print()
-    print map(lambda s: (s.ticker, s.cash_diff), security_metas) # for demo purposes
+    print "security_metas", map(lambda s: (s.ticker, s.cash_diff), security_metas) # for demo purposes
     #get_highest_dr_sec(security_metas).s_print()
     #print "bids and asks"
     #bids, asks = get_ticker_orders("AAPL")

@@ -4,9 +4,7 @@ TEAM_NAME = "Team_333"
 TEAM_PW = "cs123"
 
 def quick_run(commands):
-    TEAM_NAME = "Team_333"
-    TEAM_PW = "cs123"
-    return ret_run(TEAM_NAME, TEAM_PW, commands)
+    return ret_run(commands)
 
 class Order:
     price = None
@@ -51,12 +49,13 @@ class SecurityMeta:
         print "{", self.ticker, self.net_worth, self.dr, self.vol, "}"
 
 def get_cash():
-    return float(ret_run(TEAM_NAME, TEAM_PW, "MY_CASH")[0].split()[1])
+    return float(ret_run("MY_CASH").split()[1])
 
 # returns list of SecurityMeta
 def get_securities():
     securities = []
-    inputstr = ret_run(TEAM_NAME, TEAM_PW, "SECURITIES")[0].split()
+    inputstr = ret_run("SECURITIES").split()
+    print "inputstr", inputstr
     i = 1
     while i < len(inputstr):
         s = SecurityMeta(inputstr[i], inputstr[i+1], inputstr[i+2], inputstr[i+3])
@@ -138,7 +137,7 @@ def place_ask(ticker, price, shares):
 
 def get_my_securities():
     securities = []
-    inputstr = ret_run(TEAM_NAME, TEAM_PW, "MY_SECURITIES")[0].split()
+    inputstr = ret_run("MY_SECURITIES").split()
     i = 1
     while i < len(inputstr):
         s = Security(inputstr[i], inputstr[i+1], inputstr[i+2])
