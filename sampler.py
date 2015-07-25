@@ -17,7 +17,7 @@ def main():
     for i in range(50):
         print "time", time.time()
         for ticker in tickers:
-            print ",".join(quick_run("ORDERS " + ticker)[0].split())
+            print ",".join(quick_run("ORDERS " + ticker).split())
             sys.stdout.flush()
         time.sleep(20)
 
@@ -43,7 +43,7 @@ def track_my_securities():
         place_bid(ticker, price, 1)
         print "bought", ticker, price, 1
     for i in range(5 * 60):
-        print ",".join(quick_run("MY_SECURITIES")[0].split())
+        print ",".join(quick_run("MY_SECURITIES").split())
         sys.stdout.flush()
         time.sleep(1)
 

@@ -127,7 +127,7 @@ def place_best_bid(ticker):
 # simple wrapper for BID
 def place_bid(ticker, price, shares):
     commands = " ".join(["BID", str(ticker), str(price), str(shares)])
-    return quick_run(commands) # TODO: [0] or something
+    return quick_run(commands)
 
 # currently tries to sell all shares
 def place_ask(ticker, price, shares):
@@ -148,7 +148,7 @@ def get_my_securities():
 # returns all orders for a given stock
 # returns in two arrays: bids and asks
 def get_ticker_orders(ticker):
-    orders = quick_run("ORDERS " + ticker)[0].split()
+    orders = quick_run("ORDERS " + ticker).split()
     bids = []
     asks = []
 
