@@ -31,7 +31,7 @@ def main():
     #for s in securities:
         #s.s_print()
 
-    print place_best_bid("AAPL")
+    #print place_best_bid("AAPL")
     #print place_best_ask("AAPL")
 
 main()

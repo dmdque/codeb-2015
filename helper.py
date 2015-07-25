@@ -141,5 +141,7 @@ def get_highest_dr_sec(securities):
     drs = map(lambda e: e.dr, securities)
     return securities[drs.index(max(drs))]
 
-
+# observe dividend and price to select best stock
+def get_best_dividend_ticker():
+    None
 
