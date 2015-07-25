@@ -12,11 +12,21 @@ security_metas = []
 
 def test_two_max():
     # security_metas = [SecurityMeta(1, 1, 1, 1, 6), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 8)]
-    security_metas = [SecurityMeta(1, 1, 1, 1, 11), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 8)]
+    security_metas = [SecurityMeta(1, 1, 1, 1, 11), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 10), SecurityMeta(1, 1, 1, 1, 8), SecurityMeta(1, 1, 1, 1, 8)]
     print map(lambda e: e.cash_diff, security_metas)
     maxes = two_max(security_metas)
     print map(lambda e: e.cash_diff, maxes)
 
+def test_n_max():
+    security_metas = [SecurityMeta(1, 1, 1, 1, 11), SecurityMeta(1, 1, 1, 1, 7), SecurityMeta(1, 1, 1, 1, 10), SecurityMeta(1, 1, 1, 1, 8), SecurityMeta(1, 1, 1, 1, 8)]
+    print map(lambda e: e.cash_diff, security_metas)
+    maxes = n_max(security_metas, 4);
+    print map(lambda e: e.cash_diff, maxes)
+
+def n_max(sec_metas, n):
+    def sec_meta_reverse_cmp(a, b):
+        return int(b.cash_diff - a.cash_diff)
+    return sorted(sec_metas, cmp=sec_meta_reverse_cmp)[0:n]
 
 def two_max(sec_metas):
     cash_diffs = map(lambda s: s.cash_diff, sec_metas)
@@ -74,7 +84,7 @@ def main():
 
     # STEP 3
     if high_dividend:
-        first,second=two_max(security_metas)
+        first, second, third, fourth = n_max(security_metas, 4)
         print "highest: "
         first.s_print()
         print "second highest"
@@ -92,11 +102,11 @@ def main():
             print "selling highest"
             place_best_ask(first.ticker)
             print "buying second highest"
-            place_best_bid(first.ticker)
+            place_best_bid(second.ticker)
             cash1 = get_cash()
             time.sleep(5)
             cash2 = get_cash()
-            while (cash2 - cash1) > second.cash_diff:
+            while (cash2 - cash1) > third.cash_diff:
                 print "cash2 - cash1", (cash2 - cash1), "second highest: ", second.cash_diff
                 cash1 = get_cash()
                 time.sleep(5)
@@ -104,14 +114,38 @@ def main():
             print "selling second highest"
             place_best_ask(second.ticker)
 
+            print "buying third highest"
+            place_best_bid(third.ticker)
+            cash1 = get_cash()
+            time.sleep(5)
+            cash2 = get_cash()
+            while (cash2 - cash1) > fourth.cash_diff:
+                cash1 = get_cash()
+                time.sleep(5)
+                cash2 = get_cash()
+            print "selling highest"
+            place_best_ask(third.ticker)
+            print "buying fourth highest"
+            place_best_bid(fourth.ticker)
+            cash1 = get_cash()
+            time.sleep(5)
+            cash2 = get_cash()
+            while (cash2 - cash1) > first.cash_diff:
+                print "cash2 - cash1", (cash2 - cash1), "fourth highest: ", fourth.cash_diff
+                cash1 = get_cash()
+                time.sleep(5)
+                cash2 = get_cash()
+            print "selling fourth highest"
+            place_best_ask(fourth.ticker)
+
     # STEP 4
     if high_dividend == False:
         print "im here"
         while True:
-    	    spread_aggresiveness = None
+            spread_aggresiveness = None
             n = len(security_metas)
-#            bids = None
-#            asks = None
+            #bids = None
+            #asks = None
             asksPrice = None
             bidsPrice = None
             ask_price = None
@@ -124,10 +158,12 @@ def main():
                 bid_price = np.average(bidsPrice)
                 spread_aggresiveness = (ask_price-bid_price)*0.9
 
-	    for ii in range(0,n-1):
+            for ii in range(0,n-1):
                 bids,asks = get_ticker_orders(security_metas[ii].ticker)
-#                asksPrice = map(lambda e: e.price, asks)
-#                bidsPrice = map(lambda e: e.price, bids)
+                asksPrice = map(lambda e: e.price, asks)
+                bidsPrice = map(lambda e: e.price, bids)
+                if not asksPrice:
+                    print "error?"
                 ask_price = asks[asksPrice.index(max(asksPrice))].price
                 bid_price = bids[bidsPrice.index(min(bidsPrice))].price
                 spread = ask_price-bid_price
