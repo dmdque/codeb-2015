@@ -13,7 +13,7 @@ Step 3:
 Select the n stocks which give the highest dividends (n was hardcoded to 4). Buy as many as possible of one stock, and cycle through them all. The goal here is to capitalize on the dividends.
 
 Step 4:
-This a low dividend scenario, so the goal is to apply classic stock trading strategies, which is to buy low and sell high. Details are known only by Jun (noonelah).
+This a low dividend scenario, so the goal is to apply classic stock trading strategies, which is to buy low and sell high. This strategy is base on the theory that the bid-ask spread with converge given liquidity in the market. The assumption that there is sufficient liquidity in the market is easily satisfied as all the players are writing algorithm to buy and sell. Hence, we look at the bid-ask spread for all the stocks and trade those stocks that has bid-ask spread lesser than a predetermined level.
 
 ###sampler.py
 `sampler.py` contains some functions that were used to collect data in a csv format for analysis in a spreadsheet.
